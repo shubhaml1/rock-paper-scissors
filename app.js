@@ -1,290 +1,112 @@
-window.onload = beginningAnimation();
-let computerSelection;
-let playerSelection;
-let computerScore = 0;
-let playerScore = 0;
+   /* Store and update the score */
+   const score = JSON.parse(localStorage.getItem('savedScore')) ||
+   {
+       wins: 0,
+       losses: 0,
+       ties: 0
+   };
 
-let buttons = document.querySelectorAll(".button");
-const body = document.querySelector("body");
-const main = document.querySelector("main");
-const endAlrt = document.querySelector("#end-alert");
-const endDesc = document.querySelector("#end-desc");
-const returnMainBtn = document.querySelector("#retry-btn");
-const desc = document.querySelector("#desc3");
-const container = document.querySelector("#results-container");
+   /* Function for game */
+   function playGame(playerMove) {
+       document.querySelector('.play-game').play();
+       let pMove = '';
+       let result = '';
+       let computerMoveData = pickComputerMove();
+       let computerMove = computerMoveData[0];
+       let compMove = computerMoveData[1];
+       //to store html of computer move
+      
+       if (playerMove === 'scissors') {
+           pMove += '<i data-option="scissors" class="icon-option fa fa-hand-scissors-o" aria-hidden="true"></i>';
+           if (computerMove === 'rock') {
+               result = 'You lose :(';
+           } else if (computerMove === 'paper') {
+               result = 'Hurray!! You win!';
+           } else if (computerMove === 'scissors') {
+               result = 'Draw';
+       }
+       } else if (playerMove === 'paper') {
+           pMove += '<i data-option="paper" class="icon-option fa fa-hand-paper-o" aria-hidden="true"></i>';
 
-body.addEventListener("click", skipAnime());
-body.addEventListener("keydown", skipAnime());
+       if (computerMove === 'rock') {
+               result = 'Hurray!! You win!';
+       } else if (computerMove === 'paper') {
+               result = 'Draw';
+       } else if (computerMove === 'scissors') {
+               result = 'You lose :(';
+       }
+       } else if (playerMove === 'rock') {
+           pMove += '<i data-option="rock" class="icon-option fa fa-hand-rock-o" aria-hidden="true"></i>';
 
-function skipAnime() {
-  const span = document.querySelectorAll("span");
+       if (computerMove === 'rock') {
+               result = 'Draw';
+       } else if (computerMove === 'paper') {
+               result = 'You lose :(';
+       } else if (computerMove === 'scissors') {
+               result = 'Hurray!! You win!';
+       }
+   }
+   let gameStatusEle = document.querySelector('.js-result-final');
 
-  span.forEach((span) => span.classList.add("skip"));
+       // Update the score object based on the match 
+       if (result === 'Hurray!! You win!')  {
+           score.wins += 1;
+           
+           if(score.wins === 5) {
+               gameStatusEle.innerHTML = 'You Win!! Game Over';
+               // document.querySelector('.reset-button').innerHTML = 'Restart Game';
+               document.querySelector('.win-game').play();
+           }
+       }    
+       else if (result === 'You lose :(') {
+           score.losses += 1;
+           if(score.losses === 5) {
+               gameStatusEle.innerHTML = 'You Lost Bro!! Game Over';
+               // document.querySelector('.reset-button').innerHTML = 'Restart Game';
+               document.querySelector('.lose-game').play();
+           }
+       } 
+       else score.ties += 1;
+       localStorage.setItem('savedScore', JSON.stringify(score));
+       document.querySelector('.js-result').innerHTML = result;
+
+       // document.querySelector('.js-moves').innerHTML = `You picked: ${playerMove} Computer picked: ${computerMove}.`;
+       document.querySelector('.js-moves').innerHTML = `You picked: ${ pMove} Computer picked: ${ compMove}`;
+       document.querySelector('.js-status').innerHTML = `Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties} .`;
+
+
+   
+   // localStorage.setItem('savedScore', 'score');
+
+   // Pop-up the result of the match
+   //alert(`You picked ${playerMove}. Computer picked ${computerMove}. ${result}\n\nWins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`);
 }
 
-function beginningAnimation() {
-  fadeIn();
-  //need to turn nodelist of spans into an array so we can access last value for ontransitionend
-  const desc1 = document.querySelector("#desc1");
-  let desc1Span = desc1.querySelectorAll("span");
-
-  desc1Span = Array.from(desc1Span);
-
-  const desc2 = document.querySelector("#desc2");
-  const desc3 = document.querySelector("#desc3");
-
-  desc1Span[desc1Span.length - 1].ontransitionend = () => {
-    desc1.classList.add("fade-out");
-
-    desc1.addEventListener("animationend", () => {
-      desc1.classList.add("disappear");
-      desc1.classList.remove("animate");
-      desc2.classList.remove("disappear");
-      desc2.classList.add("animate");
-      fadeIn();
-      /* need to collect nodelist of span 
-in the same function we activate fadein()
-or else nodelist will be empty */
-      let desc2Span = desc2.querySelectorAll("span");
-      desc2Span = Array.from(desc2Span);
-
-      desc2Span[desc2Span.length - 1].ontransitionend = () => {
-        desc2.classList.add("fade-out");
-        desc2.addEventListener("animationend", () => {
-          desc2.classList.add("disappear");
-          desc2.classList.remove("animate");
-          desc3.classList.remove("disappear");
-          desc3.classList.add("animate");
-          fadeIn();
-
-          let desc3Span = desc3.querySelectorAll("span");
-          desc3Span = Array.from(desc3Span);
-
-          desc3Span[desc3Span.length - 1].ontransitionend = () => {
-            const cta = document.querySelector("#cta");
-
-            cta.classList.add("drop-down");
-
-            cta.addEventListener("animationend", () => {
-              const gameCtn = document.querySelector("#game-container");
-
-              setTimeout(function () {
-                gameCtn.classList.add("fade-in");
-              }, 300);
-            });
-          };
-        });
-      };
-    });
-  };
-}
-function fadeIn() {
-  let text = document.querySelector(".animate");
-
-  let strText = text.textContent;
-  let splitText = strText.split("");
-  text.textContent = "";
-  //append span tags to each character in the string
-  for (i = 0; i < splitText.length; i++) {
-    text.innerHTML += `<span>${splitText[i]}</span>`;
-  }
-
-  let char = 0;
-  let timer = setInterval(onTick, 50);
-
-  function onTick() {
-    const span = text.querySelectorAll("span")[char];
-    span.classList.add("fade");
-    char++;
-    //stops the function from running once the end of the string has been reached
-    if (char === splitText.length) {
-      complete();
-      return;
-    }
-  }
-  function complete() {
-    clearInterval(timer);
-    timer = null;
-  }
+   // Function for Computer Move
+function pickComputerMove() {
+   const randomNumber = Math.floor(Math.random() * 3);
+       let computerMove = '';
+       let compMove = '';
+   if (randomNumber === 0) {
+           computerMove = 'rock';
+           compMove += '<i data-option="rock" class="icon-option fa fa-hand-rock-o" aria-hidden="true"></i>';
+   } else if (randomNumber === 1) {
+           computerMove = 'paper';
+           compMove +='<i data-option="paper" class="icon-option fa fa-hand-paper-o" aria-hidden="true"></i>';
+   } else if (randomNumber === 2) {
+           computerMove = 'scissors';
+           compMove +='<i data-option="scissors" class="icon-option fa fa-hand-scissors-o" aria-hidden="true"></i>';
+   }
+   let computerMoveData = [computerMove,compMove];
+   return computerMoveData;
 }
 
-buttons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const img = button.querySelector("img");
-    playerSelection = img.alt.toLowerCase();
-
-    playRound(playerSelection, computerSelection);
-
-    if (playerScore === 5 || computerScore === 5) {
-      declareWinner();
-    }
-  });
-});
-
-const myArray = ["Rock", "Paper", "Scissors"];
-
-function computerPlay() {
-  return myArray[~~(Math.random() * myArray.length)];
-}
-
-function playRound(playerSelection, computerSelection) {
-  computerSelection = computerPlay().toLowerCase();
-  playerSelection = playerSelection.toLowerCase();
-  if (computerSelection == playerSelection) {
-    displayResults("Tie game!");
-  } else if (
-    (computerSelection == "rock" && playerSelection == "scissors") ||
-    (computerSelection == "scissors" && playerSelection == "paper") ||
-    (computerSelection == "paper" && playerSelection == "rock")
-  ) {
-    computerScore = ++computerScore;
-    keepCpuScore();
-    if (computerScore === 1) {
-      displayResults(
-        `Oh no! You lost.
-        ${capitalize(computerSelection)} beats ${playerSelection}.`
-      );
-    } else if (computerScore === 2) {
-      displayResults(
-        `Arghh. ${capitalize(
-          computerSelection
-        )} beats ${playerSelection}. Give it another shot!`
-      );
-    } else if (computerScore === 3) {
-      displayResults(
-        `${capitalize(
-          computerSelection
-        )} beats ${playerSelection}. It's ok. You got this!!`
-      );
-    } else if (computerScore === 4) {
-      displayResults(
-        `Oh no. It's match point!! ${capitalize(
-          computerSelection
-        )} beats ${playerSelection}. Don't let us down!`
-      );
-    } else {
-      displayResults(`${computerSelection} beats ${playerSelection}`);
-    }
-  } else {
-    playerScore = ++playerScore;
-    keepPlayerScore();
-    if (playerScore === 1) {
-      displayResults(
-        `Lets go!!! You won.
-        ${capitalize(playerSelection)} beats ${computerSelection}.`
-      );
-    } else if (playerScore === 2) {
-      displayResults(
-        `You're pretty good at this. ${capitalize(
-          playerSelection
-        )} beats ${computerSelection}.`
-      );
-    } else if (playerScore === 3) {
-      displayResults(
-        `${capitalize(
-          playerSelection
-        )} beats ${computerSelection}! Has mankind found its savior??`
-      );
-    } else if (playerScore === 4) {
-      displayResults(
-        `${capitalize(
-          playerSelection
-        )} beats ${computerSelection}. One more and you're a hero!`
-      );
-    } else {
-      displayResults(`${playerSelection} beats ${computerSelection}`);
-    }
-  }
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function displayResults(str) {
-  container.animate([{ opacity: 0 }, { opacity: 1 }], {
-    duration: 300,
-    fill: "forwards",
-    iterations: 1,
-    delay: 0,
-    easing: "ease-out",
-  });
-  container.textContent = str;
-}
-
-function declareWinner() {
-  rplContent();
-  if (playerScore > computerScore) {
-    endDesc.textContent = "You win! Mankind lives another day!!";
-    returnMainBtn.innerText = "Play Again";
-  } else {
-    endDesc.textContent = "You lost...who will save mankind now?";
-    returnMainBtn.innerText = "Try Again?";
-  }
-  fadeIn();
-
-  let endDescSpan = endDesc.querySelectorAll("span");
-  endDescSpan = Array.from(endDescSpan);
-
-  endDescSpan[endDescSpan.length - 1].ontransitionend = () => {
-    returnMainBtn.classList.add("fade-in");
-    /*returnMainBtn.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 00,
-      fill: "forwards",
-      iterations: 1,
-      delay: 0,
-      easing: "ease-in",
-    });*/
-  };
-}
-
-function rplContent() {
-  main.classList.add("disappear");
-  endAlrt.classList.remove("disappear");
-  desc.classList.remove("animate");
-  endDesc.classList.add("animate");
-
-  returnMainBtn.addEventListener("click", () => {
-    main.classList.remove("disappear");
-    endAlrt.classList.add("disappear");
-    desc.classList.add("animate");
-    returnMainBtn.classList.remove("fade-in");
-    resetGame();
-  });
-}
-
-function resetGame() {
-  fadeIn();
-  container.textContent = "";
-  playerScore = 0;
-  computerScore = 0;
-  keepPlayerScore();
-  keepCpuScore();
-}
-
-function keepPlayerScore() {
-  let playerScoreBox = document.querySelector("#player-score");
-
-  playerScoreBox.animate([{ opacity: 0 }, { opacity: 1 }], {
-    duration: 300,
-    fill: "forwards",
-    iterations: 1,
-    delay: 0,
-    easing: "ease-out",
-  });
-
-  playerScoreBox.textContent = playerScore;
-}
-function keepCpuScore() {
-  let computerScoreBox = document.querySelector("#computer-score");
-
-  computerScoreBox.animate([{ opacity: 0 }, { opacity: 1 }], {
-    duration: 300,
-    fill: "forwards",
-    iterations: 1,
-    delay: 0,
-    easing: "ease-out",
-  });
-
-  computerScoreBox.textContent = computerScore;
-}
+   // Function to reset scores
+   function resetScores() {
+       score.wins = 0;
+       score.losses = 0;
+       score.ties = 0;
+       localStorage.removeItem('savedScore');
+       document.querySelector('.js-status').innerHTML = `Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties} .`;
+       document.querySelector('.js-result-final').innerHTML = 'First 5 scorer will win.';
+   }

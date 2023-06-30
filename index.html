@@ -1,55 +1,48 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title>Rock Paper Scissors</title>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lacquer&family=Roboto&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <main id="main-content">
-      <h1 id="title">Man vs Computer</h1>
-      <p class="desc animate" id="desc1">
-        Machines are threatening to take over the world...
-      </p>
-      <p class="desc disappear" id="desc2">
-        Unless you can defeat them in a game of rock paper scissors first to
-        5...
-      </p>
-      <p class="desc disappear" id="desc3">
-        Do you have what it takes to save mankind?
-      </p>
-      <p id="cta">Choose your weapon!</p>
-      <div id="game-container">
-        <div id="btn-container">
-          <div id="rock" class="button">
-            <img src="cave-painting.png" alt="Rock" />
-          </div>
-          <div id="paper" class="button">
-            <img src="document.png" alt="Paper" />
-          </div>
-          <div id="scissors" class="button">
-            <img src="scissors-opened-tool-shape.png" alt="Scissors" />
-          </div>
-        </div>
-        <div id="score-label">
-          <p class="label">you</p>
-          <p class="label">computer</p>
-        </div>
-        <div id="score-container">
-          <div id="player-score" class="score">0</div>
-          <div id="computer-score" class="score">0</div>
-        </div>
-        <div id="results-container"></div>
-      </div>
-    </main>
-    <div id="end-alert" class="disappear">
-      <div id="end-desc"></div>
-      <a id="retry-btn"></a>
-    </div>
-    <script src="app.js"></script>
-  </body>
+    <head>
+        <title>Rock Paper Scissors</title>
+        <script src="https://use.fontawesome.com/d2b46f845b.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&family=Montserrat:wght@744;800&family=Ubuntu&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="game.css">
+       
+    </head>
+    <body>
+        <section class="game1">
+            <div class="flex-container">
+               <h1 class="heading-design">Rock Paper Scissors</h1> 
+            </div>
+            <div class="flex-container">
+                <h2 class="js-result-final text-result-final">First 5 scorer will win.</h2>
+            </div>  
+            <div class="flex-container game-icons">
+                <button class="icon" onclick="playGame('rock');" ><i data-option="rock"  class="icon-option fa fa-hand-rock-o" aria-hidden="true"></i></button>
+                <button class="icon" onclick="playGame('paper');"><i data-option="paper" class="icon-option fa fa-hand-paper-o" aria-hidden="true"></i></button>
+                <button class="icon" onclick="playGame('scissors');"><i data-option="scissors" class="icon-option fa fa-hand-scissors-o" aria-hidden="true"></i></button>
+            </div>  
+            <div class="flex-container">
+                <h2 class="js-result text-result"></h2>
+            </div> 
+              
+            <div class="flex-container">
+                <p class="js-moves text-moves-status"></p>
+            </div>
+            <div class="flex-container">
+                <p class="js-status text-moves-status"></p>
+            </div>
+           
+            <div class="flex-container">
+                <button class="reset-button" onclick="resetScores();">Restart Game</button>
+            </div>
+            <audio class="play-game" src="sounds_zapsplat_multimedia_button_click_005_53866.mp3"></audio>
+            <audio class="win-game" src="jackaudioclippedmp3.mp3"></audio>
+            <audio class="lose-game" src="mariolose.m4a"></audio>
+
+        <script src="game.js"></script>
+       
+            
+        </section>
+        
+    </body>
 </html>
